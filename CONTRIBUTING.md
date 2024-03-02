@@ -35,10 +35,17 @@ Thank you for considering contributing to our project! Your interest and support
   - Kotlin
   - Maven
   - Apache Kafka
+  - Redis
   - Kubernetes (K8s)
+  - Elasticsearch
 - API:
+  - gRPC
+  - REST
   - OpenAPI Swagger
+- Production:
+  - Google Kubernetes Engine
 - Frontend:
+  - oauth2
   <!-- - //TODO add client frontend  -->
 
 ## Code Rules
