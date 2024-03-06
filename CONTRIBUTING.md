@@ -39,14 +39,13 @@ Thank you for considering contributing to our project! Your interest and support
   - Kubernetes (K8s)
   - Elasticsearch
 - API:
-  - gRPC
-  - REST
-  - OpenAPI Swagger
+  - gRPC?
+  - REST: OpenAPI Swagger
 - Production:
   - Google Kubernetes Engine
 - Frontend:
-  - oauth2
-  <!-- - //TODO add client frontend  -->
+  - OAuth2
+  - React
 
 ## Code Rules
 - **Architectural Rules:** Never break or deviate from the architectural rules and principles defined in documentation for the project. Adherence to architectural guidelines ensures scalability, maintainability, and robustness of the application.

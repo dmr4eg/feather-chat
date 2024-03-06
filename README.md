@@ -1,4 +1,4 @@
-# chat
+# Feather: Chat
 
 Project for messagin application.
 
