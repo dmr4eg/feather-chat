@@ -1,0 +1,3 @@
+[submodule "docs"]
+	path = docs
+	url = git@gitlab.fel.cvut.cz:nehaland/chat.wiki.git
