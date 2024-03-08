@@ -1,11 +1,11 @@
 stages:
-  - unit-test
+  - backend-unit-test
 # - artifact-build
 # - imge-build
 # - image-test
 
-maven-test:
-  stage: unit-test
+backend-unit-test:
+  stage: backend-unit-test
   image: maven:3-openjdk-8
   script:
-    - 'mvn test clean'
+    - 'mvn -f backend/pom.xml test clean'
