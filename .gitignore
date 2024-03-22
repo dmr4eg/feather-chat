@@ -1,0 +1,15 @@
+# Ignore temporary files
+*~
+
+# Ignore build directories
+build/
+
+# Ignore log files
+*.log
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore IntelliJ and VSCode files
+.idea
+.vscode
