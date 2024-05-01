@@ -1,0 +1,71 @@
+# API
+## api-gateway
+
+http://server.com
+
+    /auth - JWT
+        POST:/ + JSON login + pass hash
+            401 - Unauthorized login
+            200 - OK + Location + JWT cookie HTTPS only
+        DELETE - logout
+            400 - Bad Request no JWT
+            200 - OK + JWT cookie date -1
+
+    /users - token dependent
+        POST:/?phone=1&name=a&... - register name
+            406 - Not Acceptable + JSON invalid
+            401 - Unauthorized JWT
+            201 - Created + Location
+        PUT:/?phone=2&username=qwe&... - update + key + new info
+            406 - Not Acceptable + JSON invalid
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid uid
+            202 - Accepted
+        GET:/?username=qwerty - info from JWT token ID
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid uid
+            200 - OK + JSON user info
+        DELETE:/ - DELETE
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid uid
+            200 - OK + Location
+
+
+    /groups - token dependent
+        POST:/ + JSON uid list
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid
+            200 - OK
+        PUT:/?name=society&DELETE=username&add=username - update
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid
+            202 - Accepted
+        GET:/?gid=1 - info
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid gid
+            200 - OK + JSON group info
+        DELETE - DELETE
+            401 - Unauthorized JWT
+            400 - Bad Request + JSON invalid gid
+            200 - OK + Location
+
+
+    /chats - token dependent
+        <!-- Pagination problem -->
+        GET:/?chat=12312&size=100
+        GET:/?chat=12312&size=100&since=datetime
+        GET:/?chat=12312&size=100&text=abc
+
+        <!-- Notification problem PWA -->
+        GET:/unread/&size=100
+        GET:/unread/&size=100&since=datetime
+
+            401 - Unauthorized JWT
+
+
+        POST - send
+            401 - Unauthorized JWT
+        PUT - update
+            401 - Unauthorized JWT
+        DELETE - DELETE
+            401 - Unauthorized JWT

@@ -1,3 +1,18 @@
 [submodule "docs"]
 	path = docs
 	url = git@gitlab.fel.cvut.cz:nehaland/chat.wiki.git
+[submodule "containers/nss-be-gateway"]
+	path = containers/nss-be-gateway
+	url = git@gitlab.fel.cvut.cz:nehaland/nss-be-gateway.git
+[submodule "containers/nss-fe"]
+	path = containers/nss-fe
+	url = git@gitlab.fel.cvut.cz:nehaland/nss-fe.git
+[submodule "containers/nss-be-users-groups"]
+	path = containers/nss-be-users-groups
+	url = git@gitlab.fel.cvut.cz:nehaland/nss-be-users-groups.git
+[submodule "containers/nss-be-messages"]
+	path = containers/nss-be-messages
+	url = git@gitlab.fel.cvut.cz:nehaland/nss-be-messages.git
+[submodule "containers/nss-job-messages"]
+	path = containers/nss-job-messages
+	url = git@gitlab.fel.cvut.cz:nehaland/nss-job-messages.git

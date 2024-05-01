@@ -2,6 +2,14 @@
 
 Project for messagin application.
 
+# Simple Waterfall model
+
+1. Analyse
+2. Design
+3. Implementation
+
+![](./waterfall.jpg)
+
 ## More Info
 - [Authors](./AUTHORS.md)
 - [Contributing](./CONTRIBUTING.md)

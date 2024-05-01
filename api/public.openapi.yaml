@@ -1,0 +1,444 @@
+openapi: 3.0.3
+info:
+  title: Chat API
+  description: API for chat application
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: auth
+    description: Authentication
+  - name: users
+    description: User management
+  - name: groups
+    description: Group management
+  - name: messages
+    description: Message management
+
+paths:
+  /auth:
+    post:
+      summary: Login
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedLoginError"
+        '200':
+          $ref: "#/components/responses/AuthorizationSuccess"
+    delete:
+      summary: Logout
+      tags:
+        - auth
+      responses:
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          $ref: "#/components/responses/UnauthorizationSuccess"
+
+  /users:
+    post:
+      tags:
+        - users
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '406':
+          $ref: "#/components/responses/NotAcceptable"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '201':
+          $ref: "#/components/responses/AuthorizationSuccess"
+    put:
+      summary: Update user
+      tags:
+        - users
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '406':
+          $ref: "#/components/responses/NotAcceptable"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '202':
+          description: Accepted
+    get:
+      summary: Get user info
+      tags:
+        - users
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    delete:
+      summary: Delete user
+      tags:
+        - users
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+          headers:
+            Location:
+              $ref: "#/components/headers/LoginRedirect"
+
+  /groups:
+    post:
+      summary: Create group
+      tags:
+        - groups
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+    put:
+      summary: Update group
+      tags:
+        - groups
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized JWT
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+    get:
+      summary: Get group info
+      tags:
+        - groups
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+    delete:
+      summary: Delete group
+      tags:
+        - groups
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+
+  /chats:
+    get:
+      summary: List chats
+      tags:
+        - users
+        - groups
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /messages:
+    post:
+      summary: Send message
+      tags:
+        - messages
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+    put:
+      summary: Update message
+      tags:
+        - messages
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+    get:
+      summary: Get messages
+      tags:
+        - messages
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete message
+      tags:
+        - messages
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '200':
+          description: OK
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    id:
+      in: query
+      name: id
+      required: true
+      schema:
+        type: string
+    limit:
+      in: query
+      name: limit
+      required: true
+      schema:
+        type: integer
+    offset:
+      in: query
+      name: offset
+      required: true
+      schema:
+        type: integer
+
+  responses:
+    UnauthorizedLoginError:
+      description: Unauthorized login
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    UnauthorizedError:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    AuthorizationSuccess:
+      description: OK
+      headers:
+        Set-Cookie:
+          $ref: "#/components/headers/Set-JWT"
+        Location:
+          $ref: "#/components/headers/HomeRedirect"
+    UnauthorizationSuccess:
+      description: OK
+      headers:
+        Set-Cookie:
+          $ref: "#/components/headers/Clear-JWT"
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotAcceptable:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  headers:
+    Set-JWT:
+      schema:
+        type: string
+        example: "jwt=tokenValue; Path=/; HttpOnly; Secure"
+    Clear-JWT:
+      schema:
+        type: string
+        example: "jwt=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/;"
+    HomeRedirect:
+      schema:
+        type: string
+        example: /
+    LoginRedirect:
+      schema:
+        type: string
+        example: /auth/login
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        phone:
+          type: string
+        name:
+          type: string
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        owner:
+          type: string
+        name:
+          type: string
+        users:
+          type: array
+          items:
+            type: string
+    Message:
+      type: object
+      properties:
+        to_id:
+          type: string
+        from_id:
+          type: string
+        datetime:
+          type: string
+        state:
+          type: string
+        text:
+          type: string
