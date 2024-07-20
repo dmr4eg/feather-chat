@@ -30,18 +30,18 @@ paths:
             schema:
               $ref: "#/components/schemas/Login"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedLoginError"
-        '200':
+        "200":
           $ref: "#/components/responses/AuthorizationSuccess"
     delete:
       summary: Logout
       tags:
         - auth
       responses:
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           $ref: "#/components/responses/UnauthorizationSuccess"
 
   /users:
@@ -56,18 +56,18 @@ paths:
             schema:
               $ref: "#/components/schemas/User"
       responses:
-        '406':
+        "406":
           $ref: "#/components/responses/NotAcceptable"
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '201':
+        "201":
           $ref: "#/components/responses/AuthorizationSuccess"
     put:
       summary: Update user
       tags:
         - users
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -75,28 +75,28 @@ paths:
             schema:
               $ref: "#/components/schemas/User"
       responses:
-        '406':
+        "406":
           $ref: "#/components/responses/NotAcceptable"
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '202':
+        "202":
           description: Accepted
     get:
       summary: Get user info
       tags:
         - users
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -108,13 +108,13 @@ paths:
       tags:
         - users
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
           headers:
             Location:
@@ -126,7 +126,7 @@ paths:
       tags:
         - groups
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -134,18 +134,18 @@ paths:
             schema:
               $ref: "#/components/schemas/Group"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
     put:
       summary: Update group
       tags:
         - groups
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
@@ -155,11 +155,11 @@ paths:
             schema:
               $ref: "#/components/schemas/Group"
       responses:
-        '202':
+        "202":
           description: Accepted
-        '401':
+        "401":
           description: Unauthorized JWT
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -170,49 +170,48 @@ paths:
       tags:
         - groups
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
     delete:
       summary: Delete group
       tags:
         - groups
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
 
   /chats:
     get:
       summary: List chats
       tags:
-        - users
-        - groups
+        - messages
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -227,7 +226,7 @@ paths:
       tags:
         - messages
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
@@ -237,18 +236,18 @@ paths:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
     put:
       summary: Update message
       tags:
         - messages
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
@@ -258,28 +257,28 @@ paths:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
     get:
       summary: Get messages
       tags:
         - messages
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -292,7 +291,7 @@ paths:
       tags:
         - messages
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
@@ -302,11 +301,11 @@ paths:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequest"
-        '200':
+        "200":
           description: OK
 
 components:
