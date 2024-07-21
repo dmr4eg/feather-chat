@@ -2,6 +2,14 @@
 
 Project for messagin application.
 
+# Microservices
+- Frontend - [nss-fe](https://gitlab.fel.cvut.cz/nehaland/nss-fe)
+- [nss-be-gateway](https://gitlab.fel.cvut.cz/nehaland/nss-be-gateway)
+- [nss-be-gateway](https://gitlab.fel.cvut.cz/nehaland/nss-be-gateway)
+- [nss-be-users-groups](https://gitlab.fel.cvut.cz/nehaland/nss-be-users-groups)
+- [nss-be-messages](https://gitlab.fel.cvut.cz/nehaland/nss-be-messages)
+- [nss-job-messages](https://gitlab.fel.cvut.cz/nehaland/nss-job-messages)
+
 # Simple Waterfall model
 
 1. Analyse
