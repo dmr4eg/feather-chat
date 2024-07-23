@@ -10,10 +10,8 @@ servers:
 tags:
   - name: auth
     description: Authentication
-  - name: users
+  - name: users-groups
     description: User management
-  - name: groups
-    description: Group management
   - name: messages
     description: Message management
 
@@ -47,7 +45,7 @@ paths:
   /users:
     post:
       tags:
-        - users
+        - users-groups
       summary: Register user
       requestBody:
         required: true
@@ -65,7 +63,7 @@ paths:
     put:
       summary: Update user
       tags:
-        - users
+        - users-groups
       security:
         - bearerAuth: []
       requestBody:
@@ -86,7 +84,7 @@ paths:
     get:
       summary: Get user info
       tags:
-        - users
+        - users-groups
       security:
         - bearerAuth: []
       parameters:
@@ -106,7 +104,7 @@ paths:
     delete:
       summary: Delete user
       tags:
-        - users
+        - users-groups
       security:
         - bearerAuth: []
       responses:
@@ -124,7 +122,7 @@ paths:
     post:
       summary: Create group
       tags:
-        - groups
+        - users-groups
       security:
         - bearerAuth: []
       requestBody:
@@ -143,7 +141,7 @@ paths:
     put:
       summary: Update group
       tags:
-        - groups
+        - users-groups
       security:
         - bearerAuth: []
       parameters:
@@ -168,7 +166,7 @@ paths:
     get:
       summary: Get group info
       tags:
-        - groups
+        - users-groups
       security:
         - bearerAuth: []
       parameters:
@@ -183,7 +181,7 @@ paths:
     delete:
       summary: Delete group
       tags:
-        - groups
+        - users-groups
       security:
         - bearerAuth: []
       parameters:
@@ -200,7 +198,7 @@ paths:
     get:
       summary: List chats
       tags:
-        - messages
+        - users-groups
       security:
         - bearerAuth: []
       parameters:
@@ -397,6 +395,7 @@ components:
       properties:
         message:
           type: string
+
     Login:
       type: object
       properties:
@@ -404,36 +403,35 @@ components:
           type: string
         password:
           type: string
+
     User:
       type: object
       properties:
-        id:
+        userId:
           type: string
-        username:
+        name:
           type: string
         phone:
           type: string
-        name:
-          type: string
+
     Group:
       type: object
       properties:
-        id:
+        groupId:
           type: string
-        owner:
+        chatId:
+          type: string
+        ownerId:
           type: string
         name:
           type: string
-        users:
-          type: array
-          items:
-            type: string
+
     Message:
       type: object
       properties:
-        to_id:
+        chatId:
           type: string
-        from_id:
+        userId:
           type: string
         datetime:
           type: string
