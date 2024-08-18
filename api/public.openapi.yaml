@@ -216,7 +216,8 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  type: integer
+                  description: list of chat IDs
 
   /messages:
     post:
@@ -225,8 +226,6 @@ paths:
         - messages
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
       requestBody:
         required: true
         content:
@@ -246,8 +245,6 @@ paths:
         - messages
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
       requestBody:
         required: true
         content:
@@ -268,7 +265,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/messageId"
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
       responses:
@@ -291,13 +288,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/id"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Message"
+        - $ref: "#/components/parameters/messageId"
       responses:
         "401":
           $ref: "#/components/responses/UnauthorizedError"
@@ -309,29 +300,190 @@ paths:
 components:
   securitySchemes:
     bearerAuth:
+      description: JWT token
       type: http
       scheme: bearer
       bearerFormat: JWT
 
   parameters:
     id:
-      in: query
       name: id
+      description: ID of the user or group
+      example: 123
+      in: query
       required: true
       schema:
         type: string
-    limit:
+    messageId:
+      name: messageId
+      description: ID of the message
+      example: { "chatId": 123, "senderId": 456, "timestamp": 1627846382000 }
       in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/MessageId"
+    limit:
       name: limit
+      description: Limit of the list
+      example: 10
+      in: query
       required: true
       schema:
         type: integer
     offset:
-      in: query
       name: offset
+      description: Offset of the list
+      example: 0
+      in: query
       required: true
       schema:
         type: integer
+
+  schemas:
+    chatId:
+      type: integer
+      format: int64
+      description: ID of the chat
+      example: 123
+
+    userId:
+      type: integer
+      format: int64
+      description: ID of the user
+      example: 456
+
+    timestamp:
+      type: integer
+      format: int64
+      description: Timestamp of the message
+      example: 1627846382000
+
+    Error:
+      type: object
+      description: Error object
+      example: {"message": "Error message"}
+      properties:
+        message:
+          description: Error message
+          example: "Error message"
+          type: string
+
+    Login:
+      type: object
+      description: Login object
+      example: {"username": "user", "password": "password"}
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    User:
+      type: object
+      description: User object
+      example: {"userId": 123, "name": "User name", "phone": "+1234567890"}
+      properties:
+        userId:
+          $ref: "#/components/schemas/userId"
+          description: ID of the user
+          example: 123
+        name:
+          type: string
+        phone:
+          type: string
+
+    Group:
+      type: object
+      description: Group object
+      example: {"groupId": 123, "chatId": 456, "ownerId": 789, "name": "Group name"}
+      properties:
+        groupId:
+          description: ID of the group
+          example: 123
+          type: integer
+          format: int64
+        chatId:
+          $ref: "#/components/schemas/chatId"
+          description: ID of the chat
+          example: 456
+        ownerId:
+          $ref: "#/components/schemas/userId"
+          description: ID of the owner
+          example: 789
+        name:
+          type: string
+
+    MessageId:
+      type: object
+      description: Message ID object
+      example: {"chatId": 123, "senderId": 456, "timestamp": 1627846382000}
+      properties:
+        chatId:
+          $ref: "#/components/schemas/chatId"
+          description: ID of the chat
+          example: 123
+        senderId:
+          $ref: "#/components/schemas/userId"
+          description: ID of the sender
+          example: 456
+        timestamp:
+          $ref: "#/components/schemas/timestamp"
+          description: Timestamp of the message
+          example: 1627846382000
+      required:
+        - chatId
+        - senderId
+        - timestamp
+    Message:
+      type: object
+      description: Message object
+      example: {"id": {"chatId": 123, "senderId": 456, "timestamp": 1627846382000}, "state": "SENT", "text": "Hello, world!"}
+      properties:
+        id:
+          $ref: "#/components/schemas/MessageId"
+          description: ID of the message
+          example: { "chatId": 123, "senderId": 456, "timestamp": 1627846382000 }
+          readOnly: true
+        state:
+          description: Current state of the message
+          example: "RECEIVED"
+          type: string
+          enum:
+            - "SENT"
+            - "RECEIVED"
+            - "READ"
+            - "EDITED"
+            - "DELETED"
+        text:
+          type: string
+          description: Text of the message
+          example: "Hello, world!"
+      required:
+        - id
+        - state
+        - text
+
+  headers:
+    Set-JWT:
+      schema:
+        type: string
+        description: JWT token
+        example: "jwt=tokenValue; Path=/; HttpOnly; Secure"
+    Clear-JWT:
+      schema:
+        type: string
+        description: JWT token clear
+        example: "jwt=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/;"
+    HomeRedirect:
+      schema:
+        type: string
+        description: Home redirect
+        example: /
+    LoginRedirect:
+      schema:
+        type: string
+        description: Login redirect
+        example: /auth/login
 
   responses:
     UnauthorizedLoginError:
@@ -370,72 +522,3 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-
-  headers:
-    Set-JWT:
-      schema:
-        type: string
-        example: "jwt=tokenValue; Path=/; HttpOnly; Secure"
-    Clear-JWT:
-      schema:
-        type: string
-        example: "jwt=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/;"
-    HomeRedirect:
-      schema:
-        type: string
-        example: /
-    LoginRedirect:
-      schema:
-        type: string
-        example: /auth/login
-
-  schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-
-    Login:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-
-    User:
-      type: object
-      properties:
-        userId:
-          type: string
-        name:
-          type: string
-        phone:
-          type: string
-
-    Group:
-      type: object
-      properties:
-        groupId:
-          type: string
-        chatId:
-          type: string
-        ownerId:
-          type: string
-        name:
-          type: string
-
-    Message:
-      type: object
-      properties:
-        chatId:
-          type: string
-        userId:
-          type: string
-        datetime:
-          type: string
-        state:
-          type: string
-        text:
-          type: string

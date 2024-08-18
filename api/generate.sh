@@ -1,1 +1,1 @@
-openapi-generator generate -i openapi.yaml -g kotlin-spring -o gen/
+openapi-generator generate -i src/main/resources/openapi.yaml -g kotlin-spring -o gen/
