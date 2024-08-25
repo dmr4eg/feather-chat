@@ -15,288 +15,6 @@ tags:
   - name: messages
     description: Message management
 
-paths:
-  /auth:
-    post:
-      summary: Login
-      tags:
-        - auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Login"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedLoginError"
-        "200":
-          $ref: "#/components/responses/AuthorizationSuccess"
-    delete:
-      summary: Logout
-      tags:
-        - auth
-      responses:
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          $ref: "#/components/responses/UnauthorizationSuccess"
-
-  /users:
-    post:
-      tags:
-        - users-groups
-      summary: Register user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-      responses:
-        "406":
-          $ref: "#/components/responses/NotAcceptable"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "201":
-          $ref: "#/components/responses/AuthorizationSuccess"
-    put:
-      summary: Update user
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-      responses:
-        "406":
-          $ref: "#/components/responses/NotAcceptable"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "202":
-          description: Accepted
-    get:
-      summary: Get user info
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-
-    delete:
-      summary: Delete user
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-          headers:
-            Location:
-              $ref: "#/components/headers/LoginRedirect"
-
-  /groups:
-    post:
-      summary: Create group
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Group"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-    put:
-      summary: Update group
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Group"
-      responses:
-        "202":
-          description: Accepted
-        "401":
-          description: Unauthorized JWT
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-    get:
-      summary: Get group info
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-    delete:
-      summary: Delete group
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-
-  /chats:
-    get:
-      summary: List chats
-      tags:
-        - users-groups
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/offset"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: integer
-                  description: list of chat IDs
-
-  /messages:
-    post:
-      summary: Send message
-      tags:
-        - messages
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Message"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-    put:
-      summary: Update message
-      tags:
-        - messages
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Message"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-    get:
-      summary: Get messages
-      tags:
-        - messages
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/messageId"
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/offset"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Message"
-    delete:
-      summary: Delete message
-      tags:
-        - messages
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/messageId"
-      responses:
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "200":
-          description: OK
-
 components:
   securitySchemes:
     bearerAuth:
@@ -305,144 +23,185 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  parameters:
-    id:
-      name: id
-      description: ID of the user or group
-      example: 123
-      in: query
-      required: true
-      schema:
-        type: string
-    messageId:
-      name: messageId
-      description: ID of the message
-      example: { "chatId": 123, "senderId": 456, "timestamp": 1627846382000 }
-      in: query
-      required: true
-      schema:
-        $ref: "#/components/schemas/MessageId"
-    limit:
-      name: limit
-      description: Limit of the list
-      example: 10
-      in: query
-      required: true
-      schema:
-        type: integer
-    offset:
-      name: offset
-      description: Offset of the list
-      example: 0
-      in: query
-      required: true
-      schema:
-        type: integer
-
   schemas:
-    chatId:
-      type: integer
-      format: int64
-      description: ID of the chat
-      example: 123
+    userName:
+      description: User name
+      example: qwerty
+      type: string
 
-    userId:
-      type: integer
-      format: int64
+    userUUID:
       description: ID of the user
-      example: 456
+      type: string
+      format: uuid
+      example: 665c599d-5c8d-4d20-aaab-7ffaba150606
+
+    chatUUID:
+      description: ID of the chat
+      type: string
+      format: uuid
+      example: 665c599d-5c8d-4d20-aaab-7ffaba150606
 
     timestamp:
+      description: Timestamp of the message
       type: integer
       format: int64
-      description: Timestamp of the message
       example: 1627846382000
 
     Error:
       type: object
       description: Error object
-      example: {"message": "Error message"}
+      example: { "message": "Error message" }
       properties:
         message:
           description: Error message
           example: "Error message"
           type: string
 
-    Login:
+    AuthRecord:
       type: object
-      description: Login object
-      example: {"username": "user", "password": "password"}
+      description: Auth object
+      example:
+        {
+          "userUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "userHash": "wewefwefwef",
+        }
       properties:
-        username:
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+        userHash:
+          description: "SHA-256 hash"
           type: string
-        password:
-          type: string
+      required:
+        - userUUID
+        - userHash
 
     User:
       type: object
       description: User object
-      example: {"userId": 123, "name": "User name", "phone": "+1234567890"}
+      example:
+        {
+          "id": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "name": "User name",
+          "phone": "+1234567890",
+        }
       properties:
-        userId:
-          $ref: "#/components/schemas/userId"
-          description: ID of the user
-          example: 123
+        id:
+          $ref: "#/components/schemas/userUUID"
         name:
-          type: string
+          $ref: "#/components/schemas/userName"
         phone:
           type: string
+      required:
+        - id
+        - name
+        - phone
+
+    Chat:
+      type: object
+      description: Chat object
+      properties:
+        id:
+          $ref: "#/components/schemas/chatUUID"
+        type:
+          description: Type of the chat
+          example: "PRIVATE"
+          type: string
+          enum:
+            - "PRIVATE"
+            - "GROUP"
+      required:
+        - id
+        - type
+
+    Membership:
+      type: object
+      description: user membership object
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+      required:
+        - chatUUID
+        - userUUID
 
     Group:
       type: object
       description: Group object
-      example: {"groupId": 123, "chatId": 456, "ownerId": 789, "name": "Group name"}
+      example:
+        {
+          "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "ownerUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "name": "Group name",
+        }
       properties:
-        groupId:
-          description: ID of the group
-          example: 123
-          type: integer
-          format: int64
-        chatId:
-          $ref: "#/components/schemas/chatId"
-          description: ID of the chat
-          example: 456
-        ownerId:
-          $ref: "#/components/schemas/userId"
-          description: ID of the owner
-          example: 789
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        ownerUUID:
+          $ref: "#/components/schemas/userUUID"
         name:
           type: string
+      required:
+        - chatUUID
+        - ownerUUID
+        - name
+
+    MembershipCache:
+      type: object
+      description: user membership cache object
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+        ttl:
+          description: Time To Live
+          type: integer
+          format: int64
+          example: 1627846382000
+      required:
+        - chatUUID
+        - userUUID
+        - ttl
 
     MessageId:
       type: object
       description: Message ID object
-      example: {"chatId": 123, "senderId": 456, "timestamp": 1627846382000}
+      example:
+        {
+          "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "senderUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "timestamp": 1627846382000,
+        }
       properties:
-        chatId:
-          $ref: "#/components/schemas/chatId"
-          description: ID of the chat
-          example: 123
-        senderId:
-          $ref: "#/components/schemas/userId"
-          description: ID of the sender
-          example: 456
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        senderUUID:
+          $ref: "#/components/schemas/userUUID"
         timestamp:
           $ref: "#/components/schemas/timestamp"
-          description: Timestamp of the message
-          example: 1627846382000
       required:
-        - chatId
-        - senderId
+        - chatUUID
+        - senderUUID
         - timestamp
+
     Message:
       type: object
       description: Message object
-      example: {"id": {"chatId": 123, "senderId": 456, "timestamp": 1627846382000}, "state": "SENT", "text": "Hello, world!"}
+      example:
+        {
+          "id":
+            {
+              "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "senderUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "timestamp": 1627846382000,
+            },
+          "state": "SENT",
+          "text": "Hello, world!",
+        }
       properties:
         id:
           $ref: "#/components/schemas/MessageId"
-          description: ID of the message
-          example: { "chatId": 123, "senderId": 456, "timestamp": 1627846382000 }
           readOnly: true
         state:
           description: Current state of the message
@@ -453,7 +212,6 @@ components:
             - "RECEIVED"
             - "READ"
             - "EDITED"
-            - "DELETED"
         text:
           type: string
           description: Text of the message
@@ -462,6 +220,79 @@ components:
         - id
         - state
         - text
+
+  parameters:
+    userUUID_path:
+      name: userUUID
+      description: UUID of the user
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/userUUID"
+
+    chatUUID_path:
+      name: chatUUID
+      description: UUID of the chat
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/chatUUID"
+
+    userName:
+      name: userName
+      description: user name
+      example: "someone"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/userName"
+
+    userHash:
+      name: userHash
+      description: hash of user password
+      example: "9da94a0d0924c1664d09acf6228f965fe0d8be1b9941f06d634e52db0e23414b"
+      in: query
+      required: true
+      schema:
+        type: string
+
+    chatUUID:
+      name: chatUUID
+      description: UUID of the chat
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/chatUUID"
+
+    authUserUUID:
+      name: authUserUUID
+      description: UUID of the user
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/userUUID"
+
+    limit:
+      name: limit
+      description: Limit of the list
+      example: 10
+      in: query
+      required: true
+      schema:
+        type: integer
+
+    offset:
+      name: offset
+      description: Offset of the list
+      example: 0
+      in: query
+      required: true
+      schema:
+        type: integer
 
   headers:
     Set-JWT:
@@ -522,3 +353,367 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
+paths:
+  /auth:
+    post:
+      summary: Register
+      description: if userService return userUUID create an authRecord with password hash
+      tags:
+        - auth
+      parameters:
+        - $ref: "#/components/parameters/userHash"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    get:
+      summary: Login
+      description: if userName valid return JWT with userUUID
+      tags:
+        - auth
+      parameters:
+        - $ref: "#/components/parameters/userName"
+        - $ref: "#/components/parameters/userHash"
+      responses:
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          $ref: "#/components/responses/AuthorizationSuccess"
+
+    delete:
+      summary: Logout
+      description: delete JWT
+      tags:
+        - auth
+      responses:
+        "200":
+          $ref: "#/components/responses/UnauthorizationSuccess"
+
+  /users:
+    post:
+      tags:
+        - users-groups
+      summary: Register user
+      description: if userUUID not exists create new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "201":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    put:
+      summary: Update user
+      description: if authUserUUID valid update user
+      tags:
+        - users-groups
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "202":
+          description: Accepted
+
+    delete:
+      summary: Delete user
+      description: if authUserUUID valid delete user
+      tags:
+        - users-groups
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+          headers:
+            Location:
+              $ref: "#/components/headers/Clear-JWT"
+
+    get:
+      summary: Get user info by username
+      description: if userUUID exists get user info
+      tags:
+        - users-groups
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/userName"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{userUUID}:
+    get:
+      summary: Get user info by userUUID
+      description: if userUUID exists get user info
+      tags:
+        - users-groups
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/userUUID_path"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # // TODO: in path parameters
+  #  /groups:
+  #    post:
+  #      summary: Create group
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      requestBody:
+  #        required: true
+  #        content:
+  #          application/json:
+  #            schema:
+  #              $ref: "#/components/schemas/Group"
+  #      responses:
+  #        "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #        "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #        "200":
+  #          description: OK
+  #    put:
+  #      summary: Update group
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      requestBody:
+  #        required: true
+  #        content:
+  #          application/json:
+  #            schema:
+  #              $ref: "#/components/schemas/Group"
+  #      responses:
+  #        "202":
+  #          description: Accepted
+  #        "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #        "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #    get:
+  #      summary: Get group info
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      parameters:
+  #        - $ref: "#/components/parameters/chatUUID"
+  #      responses:
+  #        "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #        "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #        "200":
+  #          description: OK
+  #    delete:
+  #      summary: Delete group
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      parameters:
+  #        - $ref: "#/components/parameters/chatUUID"
+  #      responses:
+  #        "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #        "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #        "200":
+  #          description: OK
+  #
+  #  /chats:
+  #    post:
+  #      summary: Create chat
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      requestBody:
+  #        required: true
+  #        content:
+  #          application/json:
+  #            schema:
+  #              $ref: "#/components/schemas/Chat"
+  #      responses:
+  #          "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #          "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #          "200":
+  #          description: OK
+  #    get:
+  #      summary: List chats
+  #      tags:
+  #        - users-groups
+  #      security:
+  #        - bearerAuth: []
+  #      parameters:
+  #        - $ref: "#/components/parameters/limit"
+  #        - $ref: "#/components/parameters/offset"
+  #      responses:
+  #        "401":
+  #          $ref: "#/components/responses/UnauthorizedError"
+  #        "400":
+  #          $ref: "#/components/responses/BadRequest"
+  #        "200":
+  #          description: OK
+  #          content:
+  #            application/json:
+  #              schema:
+  #                type: array
+  #                items:
+  #                  type: integer
+  #                  description: list of chat IDs
+
+  /messages:
+    post:
+      summary: Send message
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+    put:
+      summary: Update message
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+    get:
+      summary: Get messages
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+        - $ref: "#/components/parameters/chatUUID"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete message
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageId"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
