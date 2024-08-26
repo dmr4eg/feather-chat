@@ -670,9 +670,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Group"
+                $ref: "#/components/schemas/Group"
 
     put:
       summary: Update group
