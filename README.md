@@ -1,26 +1,30 @@
-# Feather: Chat
+# Feather Chat
 
-Project for messagin application.
+Microservice application for messaging using event driven architecture.
 
-# Microservices
-- Frontend - [nss-fe](https://gitlab.fel.cvut.cz/nehaland/nss-fe)
-- [nss-be-gateway](https://gitlab.fel.cvut.cz/nehaland/nss-be-gateway)
-- [nss-be-gateway](https://gitlab.fel.cvut.cz/nehaland/nss-be-gateway)
-- [nss-be-users-groups](https://gitlab.fel.cvut.cz/nehaland/nss-be-users-groups)
-- [nss-be-messages](https://gitlab.fel.cvut.cz/nehaland/nss-be-messages)
-- [nss-job-messages](https://gitlab.fel.cvut.cz/nehaland/nss-job-messages)
+Developed by **3** students.
 
-# Simple Waterfall model
+## DONE
+- [x] Git Flow & branching - In use
+- [x] [Documentation](https://gitlab.fel.cvut.cz/nehaland/nss-feather-chat/-/wikis/home)
+  - [x] Planning - Complete
+  - [x] Analysis - Complete
+  - [ ] Design - Only sequence diagram needed
+- [x] [OpenAPI](./api/public.openapi.yaml) - Complete (850 lines of yaml)
+- [ ] Kotlin - Microservices & Some software patterns
+  - [x] [Users-groups](https://gitlab.fel.cvut.cz/nehaland/nss-be-users-groups) - MVP
+  - [x] [Messages](https://gitlab.fel.cvut.cz/nehaland/nss-be-messages) - MVP
+  - [x] [Messages-job](https://gitlab.fel.cvut.cz/nehaland/nss-job-messages) - MVP
+  - [ ] [Gateway](https://gitlab.fel.cvut.cz/nehaland/nss-be-gateway) - TODO
+  - [ ] [Frontend](https://gitlab.fel.cvut.cz/nehaland/nss-fe) - `:(`
+- [ ] Tech stack
+  - [x] Docker - Implemented
+  - [x] Spring boot - Implemented
+  - [x] Postgres - Implemented
+  - [x] Kafka - Implemented
+  - [ ] Redis - WIP
+  - [ ] Logstash - TODO
 
-1. Analyse
-2. Design
-3. Implementation
+## In general
 
 ![](./waterfall.jpg)
-
-## More Info
-- [Authors](./AUTHORS.md)
-- [Contributing](./CONTRIBUTING.md)
-- [Security](./SECURITY.md)
-- [Documentation](https://gitlab.fel.cvut.cz/nehaland/chat/-/wikis/home)
-- [Changelog](./CHANGELOG.md)
