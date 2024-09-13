@@ -13,3 +13,4 @@ build/
 # Ignore IntelliJ and VSCode files
 .idea
 .vscode
+.iml
