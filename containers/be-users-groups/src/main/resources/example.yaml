@@ -1,0 +1,197 @@
+openapi: 3.0.3
+info:
+  description: A simple API to demonstrate Spring Boot
+  title: Basic Spring Boot API
+  version: 1.0.0
+servers:
+- description: Local server
+  url: http://0.0.0.0:8080
+  variables:
+    port:
+      default: "8080"
+      description: The port number of the server
+paths:
+  /text/{id}:
+    delete:
+      description: Deletes a text by its ID
+      operationId: deleteTextById
+      parameters:
+      - description: The ID of the page
+        explode: true
+        in: query
+        name: page-id
+        required: true
+        schema:
+          $ref: '#/components/schemas/TextId'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Text'
+          description: A text object
+      summary: Delete text by ID
+      x-swagger-router-controller: group.andrewplayground.TextController
+    get:
+      description: Returns a text by its ID
+      operationId: getTextById
+      parameters:
+      - description: The ID of the page
+        explode: true
+        in: query
+        name: page-id
+        required: true
+        schema:
+          $ref: '#/components/schemas/TextId'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Text'
+          description: A text object
+      summary: Get text by ID
+      x-swagger-router-controller: group.andrewplayground.TextController
+    put:
+      description: Updates a text by its ID
+      operationId: updateTextById
+      parameters:
+      - description: The ID of the page
+        explode: true
+        in: query
+        name: page-id
+        required: true
+        schema:
+          $ref: '#/components/schemas/TextId'
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Text'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Text'
+          description: A text object
+      summary: Update text by ID
+      x-swagger-router-controller: group.andrewplayground.TextController
+  /text:
+    get:
+      description: Returns an array of texts
+      operationId: getTextArray
+      parameters:
+      - description: The number of items to return
+        explode: true
+        in: query
+        name: page-size
+        required: true
+        schema:
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: The page number
+        explode: true
+        in: query
+        name: page-number
+        required: true
+        schema:
+          example: 1
+          format: int32
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Text'
+                type: array
+          description: A simple greeting message
+      summary: Get text
+      x-swagger-router-controller: group.andrewplayground.TextController
+    post:
+      description: Creates a text
+      operationId: createText
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Text'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Text'
+          description: A text object
+      summary: Create text
+      x-swagger-router-controller: group.andrewplayground.TextController
+components:
+  parameters:
+    pageSize:
+      description: The number of items to return
+      explode: true
+      in: query
+      name: page-size
+      required: true
+      schema:
+        example: 10
+        format: int32
+        maximum: 100
+        minimum: 1
+        type: integer
+      style: form
+    pageNumber:
+      description: The page number
+      explode: true
+      in: query
+      name: page-number
+      required: true
+      schema:
+        example: 1
+        format: int32
+        minimum: 1
+        type: integer
+      style: form
+    pageId:
+      description: The ID of the page
+      explode: true
+      in: query
+      name: page-id
+      required: true
+      schema:
+        $ref: '#/components/schemas/TextId'
+      style: form
+  schemas:
+    TextId:
+      properties:
+        id:
+          example: 1
+          format: int64
+          type: integer
+      type: object
+    Text:
+      example:
+        id: 1
+        text: "Hello, World!"
+      properties:
+        id:
+          example: 1
+          format: int64
+          type: integer
+        text:
+          example: "Hello, World!"
+          type: string
+      type: object

@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: nss-be-postgres
+    image: docker.io/postgres:alpine3.20
+    env_file:
+      - env/postgres.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - data-net
+    restart: always
+
+  redis:
+    container_name: nss-be-redis
+    image: docker.io/redis/redis-stack:latest
+    ports:
+      - "13333:8001" # UI
+      - "6379:6379" # Connect
+    volumes:
+      - redis-data:/data
+    networks:
+      - data-net
+    restart: always
+
+  zookeeper:
+    image: docker.io/confluentinc/cp-zookeeper:7.6.2
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    networks:
+      - kafka-net
+
+  kafka:
+    # podman-compose exec kafka kafka-topics --create --topic HUI --partitions 1 --replication-factor 1 --bootstrap-server kafka:9092
+    image: docker.io/confluentinc/cp-kafka:7.6.2
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9997
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    ports:
+      - 127.0.0.1:9092:9092
+      - 127.0.0.1:9997:9997
+    networks:
+      - kafka-net
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: docker.io/provectuslabs/kafka-ui:latest
+    ports:
+      - "9000:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: dev-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+      DYNAMIC_CONFIG_ENABLED: true
+    depends_on:
+      - kafka
+    networks:
+      - kafka-net
+
+
+
+#  spring:
+#    container_name: nss-be-spring
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    env_file:
+#      - ./env/spring.env
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - data-net
+#      - kafka-net
+#    depends_on:
+#      - postgres
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  data-net:
+    name: data-net
+    driver: bridge
+  kafka-net:
+    name: kafka-net
+    driver: bridge

@@ -1,0 +1,466 @@
+openapi: 3.0.3
+info:
+  title: Chat API
+  description: API for chat application
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: auth
+    description: Authentication
+  - name: users-groups
+    description: User management
+  - name: messages
+    description: Message management
+
+components:
+  securitySchemes:
+    bearerAuth:
+      description: JWT token
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    userName:
+      description: User name
+      example: qwerty
+      type: string
+
+    userUUID:
+      description: ID of the user
+      type: string
+      format: uuid
+      example: 665c599d-5c8d-4d20-aaab-7ffaba150606
+
+    chatUUID:
+      description: ID of the chat
+      type: string
+      format: uuid
+      example: 665c599d-5c8d-4d20-aaab-7ffaba150606
+
+    timestamp:
+      description: Timestamp of the message
+      type: integer
+      format: int64
+      example: 1627846382000
+
+    Error:
+      type: object
+      description: Error object
+      example: { "message": "Error message" }
+      properties:
+        message:
+          description: Error message
+          example: "Error message"
+          type: string
+
+    AuthRecord:
+      type: object
+      description: Auth object
+      example:
+        {
+          "userUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "userHash": "wewefwefwef",
+        }
+      properties:
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+        userHash:
+          description: "SHA-256 hash"
+          type: string
+      required:
+        - userUUID
+        - userHash
+
+    User:
+      type: object
+      description: User object
+      example:
+        {
+          "id": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "name": "User name",
+          "phone": "+1234567890",
+        }
+      properties:
+        id:
+          $ref: "#/components/schemas/userUUID"
+        name:
+          $ref: "#/components/schemas/userName"
+        phone:
+          type: string
+          example: "+1234567890"
+      required:
+        - name
+        - phone
+
+    Chat:
+      type: object
+      description: Chat object
+      properties:
+        id:
+          $ref: "#/components/schemas/chatUUID"
+        type:
+          description: Type of the chat
+          example: "PRIVATE"
+          type: string
+          enum:
+            - "PRIVATE"
+            - "GROUP"
+      required:
+        - type
+
+    Membership:
+      type: object
+      description: user membership object
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+      required:
+        - chatUUID
+        - userUUID
+
+    Group:
+      type: object
+      description: Group object
+      example:
+        {
+          "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "ownerUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "name": "Group name",
+        }
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        ownerUUID:
+          $ref: "#/components/schemas/userUUID"
+        name:
+          type: string
+      required:
+        - ownerUUID
+        - name
+
+    MembershipCache:
+      type: object
+      description: user membership cache object
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        userUUID:
+          $ref: "#/components/schemas/userUUID"
+        ttl:
+          description: Time To Live
+          type: integer
+          format: int64
+          example: 1627846382000
+      required:
+        - chatUUID
+        - userUUID
+        - ttl
+
+    MessageId:
+      type: object
+      description: Message ID object
+      example:
+        {
+          "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "senderUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+          "timestamp": 1627846382000,
+        }
+      properties:
+        chatUUID:
+          $ref: "#/components/schemas/chatUUID"
+        senderUUID:
+          $ref: "#/components/schemas/userUUID"
+        timestamp:
+          $ref: "#/components/schemas/timestamp"
+      required:
+        - chatUUID
+        - senderUUID
+        - timestamp
+
+    Message:
+      type: object
+      description: Message object
+      example:
+        {
+          "id":
+            {
+              "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "senderUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "timestamp": 1627846382000,
+            },
+          "state": "SENT",
+          "text": "Hello, world!",
+        }
+      properties:
+        id:
+          example:
+            {
+              "chatUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "senderUUID": "665c599d-5c8d-4d20-aaab-7ffaba150606",
+              "timestamp": 1627846382000,
+            }
+          $ref: "#/components/schemas/MessageId"
+          readOnly: true
+        state:
+          description: Current state of the message
+          example: "RECEIVED"
+          type: string
+          enum:
+            - "SENT"
+            - "RECEIVED"
+            - "READ"
+            - "EDITED"
+        text:
+          type: string
+          description: Text of the message
+          example: "Hello, world!"
+      required:
+        - id
+        - state
+        - text
+
+  parameters:
+    userUUID_path:
+      name: userUUID
+      description: UUID of the user
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/userUUID"
+
+    chatUUID_path:
+      name: chatUUID
+      description: UUID of the chat
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/chatUUID"
+
+    userName:
+      name: userName
+      description: user name
+      example: "someone"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/userName"
+
+    userHash:
+      name: userHash
+      description: hash of user password
+      example: "9da94a0d0924c1664d09acf6228f965fe0d8be1b9941f06d634e52db0e23414b"
+      in: query
+      required: true
+      schema:
+        type: string
+
+    chatUUID:
+      name: chatUUID
+      description: UUID of the chat
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/chatUUID"
+
+    userUUID:
+      name: userUUID
+      description: UUID of the user
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/userUUID"
+
+    authUserUUID:
+      name: authUserUUID
+      description: UUID of the user
+      example: "83ff0131-25ca-4583-9b9d-e3900039b17d"
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/userUUID"
+
+    limit:
+      name: limit
+      description: Limit of the list
+      example: 10
+      in: query
+      required: true
+      schema:
+        type: integer
+
+    offset:
+      name: offset
+      description: Offset of the list
+      example: 0
+      in: query
+      required: true
+      schema:
+        type: integer
+
+  headers:
+    Set-JWT:
+      schema:
+        type: string
+        description: JWT token
+        example: "jwt=tokenValue; Path=/; HttpOnly; Secure"
+    Clear-JWT:
+      schema:
+        type: string
+        description: JWT token clear
+        example: "jwt=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/;"
+    HomeRedirect:
+      schema:
+        type: string
+        description: Home redirect
+        example: /
+    LoginRedirect:
+      schema:
+        type: string
+        description: Login redirect
+        example: /auth/login
+
+  responses:
+    UnauthorizedLoginError:
+      description: Unauthorized login
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    UnauthorizedError:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    AuthorizationSuccess:
+      description: OK
+      headers:
+        Set-Cookie:
+          $ref: "#/components/headers/Set-JWT"
+        Location:
+          $ref: "#/components/headers/HomeRedirect"
+    UnauthorizationSuccess:
+      description: OK
+      headers:
+        Set-Cookie:
+          $ref: "#/components/headers/Clear-JWT"
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotAcceptable:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+paths:
+
+  /messages:
+    post:
+      summary: Send message
+      description: if authUserUUID in chat
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+
+    put:
+      summary: Edit message
+      description: if authUserUUID in chat
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+
+    delete:
+      summary: Delete message
+      description: if authUserUUID in chat
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageId"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+
+    get:
+      summary: Get messages
+      description: if authUserUUID in chat
+      tags:
+        - messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/authUserUUID"
+        - $ref: "#/components/parameters/chatUUID"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+      responses:
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"

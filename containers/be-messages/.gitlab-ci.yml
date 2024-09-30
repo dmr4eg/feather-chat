@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test
+  - release
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+before_script:
+  - export MAVEN_OPTS
+
+maven_build:
+  stage: build
+  image: docker.io/maven:3.9-amazoncorretto-17-debian-bookworm
+  script:
+    - mvn clean package -DskipTests
+  only:
+    - main
+
+maven_test:
+  stage: test
+  image: docker.io/maven:3.9-amazoncorretto-17-debian-bookworm
+  script:
+    - mvn test
+  only:
+    - main
+
+docker_build:
+  stage: release
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build -t "$CI_REGISTRY_IMAGE":"$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE":"$CI_COMMIT_REF_SLUG"
+  only:
+    - main
